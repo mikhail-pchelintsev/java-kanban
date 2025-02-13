@@ -1,3 +1,8 @@
+package manager;
+
+import model.Epic;
+import model.SubTask;
+
 import java.util.HashMap;
 
 public class TaskManager {

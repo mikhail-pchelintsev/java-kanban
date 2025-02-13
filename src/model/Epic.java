@@ -1,4 +1,5 @@
-import java.sql.SQLOutput;
+package model;
+
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -96,7 +97,7 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Epic{" +
+        return "model.Epic{" +
                 "epicId=" + epicId +
                 ", name=" + getName() +
                 ", status=" + getStatus() +
