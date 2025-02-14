@@ -90,7 +90,7 @@ public class Main {
 
         Epic epic = new Epic(name, description, Status.NEW);
         manager.createEpic(epic);
-        System.out.println("Задача создан с ID: " + epic.getEpicId());
+        System.out.println("Задача создан с ID: " + epic.getId());
     }
 
     private static void updateEpic(TaskManager manager, Scanner scanner) {
@@ -107,7 +107,7 @@ public class Main {
         String description = scanner.nextLine();;
         Epic epic = new Epic(name, description, Status.NEW);
         manager.updateEpicById(epicId, epic);
-        System.out.println("Задача создана с ID: " + epic.getEpicId());
+        System.out.println("Задача создана с ID: " + epic.getId());
     }
 
     private static void updateSubtask(TaskManager manager, Scanner scanner) {

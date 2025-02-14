@@ -1,7 +1,9 @@
 package model;
 
+import java.util.Objects;
+
 public class Task {
-    private Long taskId;
+    private Long Id;
     private String name;
     private String description;
     private Status status;
@@ -13,11 +15,11 @@ public class Task {
     }
 
     public long getId() {
-        return taskId;
+        return Id;
     }
 
     public void setId(Long id) {
-        taskId = id;
+        Id = id;
     }
 
     public String getName() {
@@ -47,10 +49,23 @@ public class Task {
     @Override
     public String toString() {
         return "model.Task{" +
-                "taskId=" + taskId +
+                "taskId=" + Id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return Objects.equals(Id, task.Id) && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Id, name, description, status);
     }
 }
