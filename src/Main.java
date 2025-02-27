@@ -1,3 +1,5 @@
+import manager.InMemoryTaskManager;
+import manager.Managers;
 import manager.TaskManager;
 import model.Epic;
 import model.Status;
@@ -7,7 +9,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        TaskManager manager = new TaskManager();
+        TaskManager manager = Managers.getDefault();
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -58,6 +60,10 @@ public class Main {
                 case 10:
                     updateSubtask(manager,scanner);
                     break;
+                case 11:
+                    System.out.println("Ваш список просмотренных задач");
+                    manager.getHistoryManager().getHistory();
+                    break;
                 case 0:
                     System.out.println("Выход из программы.");
                     return;
@@ -79,6 +85,7 @@ public class Main {
         System.out.println("8. Удалить подзадачу по ID");
         System.out.println("9. Обновить задачу по ID");
         System.out.println("10. Обновить подзадачу по ID");
+        System.out.println("11. Показать список просмотренных задач");
         System.out.println("0. Выйти");
     }
 
@@ -153,4 +160,6 @@ public class Main {
                 return Status.NEW;
         }
     }
+
+
 }

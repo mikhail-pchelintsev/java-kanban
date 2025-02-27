@@ -10,9 +10,21 @@ public class Epic extends Task {
         super(name, description, status);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Epic epic = (Epic) o;
+        return Objects.equals(subTasks, epic.subTasks);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), subTasks);
+    }
 
-    public void update(Long id,SubTask subTask){
+    public void update(Long id, SubTask subTask){
         if (id == null || subTask == null) {
             System.out.println("Ошибка: ID или подадача не могут быть null.");
             return;
