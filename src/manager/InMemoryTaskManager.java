@@ -1,16 +1,21 @@
 package manager;
 
+import interfaces.HistoryManager;
+import interfaces.TaskManager;
 import model.Epic;
 import model.SubTask;
+import model.Task;
 
 import java.util.HashMap;
+import java.util.Map;
+import model.Epic;
 
 public class InMemoryTaskManager implements TaskManager {
-    protected HashMap<Long, Epic> epics = new HashMap<>();
+    private Map<Long, Epic> epics = new HashMap<>();
     private long nextEpicId = 1;
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
-    public HashMap<Long, Epic> getEpics() {
+    public Map<Long, Epic> getEpics() {
         return epics;
     }
 
@@ -108,8 +113,15 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public HistoryManager getHistoryManager() {
-        return historyManager;
+    public void getHistoryManager() {
+        if(historyManager.getHistory().size() > 0){
+            for(Task task : historyManager.getHistory()) {
+                System.out.println(task);
+            }
+        } else {
+            System.out.println("Пока что вы не смотрели свои задачи)");
+        }
+
     }
 
 
@@ -133,16 +145,6 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Задача с ID " + id + " не найден.");
         }
 //        moveToWatch(epics.get(id));
-    }
-
-    @Override
-    public void printAllSubtaskInEpic(Long id) {
-        if (epics.containsKey(id)) {
-            epics.get(id).printAllSubtask();
-        } else {
-            System.out.println("Задача с ID " + id + " не найден.");
-        }
-
     }
 
 //    public void moveToWatch(Task task) {

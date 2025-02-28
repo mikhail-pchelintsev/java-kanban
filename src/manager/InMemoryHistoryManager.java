@@ -1,22 +1,19 @@
 package manager;
 
+import interfaces.HistoryManager;
 import model.Task;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private ArrayList<Task> listOfViewedTasks = new ArrayList<>();
+    private Collection<Task> listOfViewedTasks = new ArrayList<>();
 
 
     @Override
-    public void getHistory() {
-        if(listOfViewedTasks.size() == 0){
-            System.out.println("Вы пока не смотрели свои задачи)");
-        } else {
-            for (Task task : listOfViewedTasks){
-                System.out.println(task);
-            }
-        }
+    public Collection<Task> getHistory() {
+        return new ArrayList<>(listOfViewedTasks);
     }
 
     @Override
@@ -26,12 +23,10 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add (Task task) {
-        if(listOfViewedTasks.size() <= 10){
-            listOfViewedTasks.add(task);
-        } else {
+        if(listOfViewedTasks.size() > 10){
             listOfViewedTasks.remove(0);
-            listOfViewedTasks.add(task);
         }
+        listOfViewedTasks.add(task);
     }
 
 }

@@ -1,6 +1,5 @@
-import manager.InMemoryTaskManager;
 import manager.Managers;
-import manager.TaskManager;
+import interfaces.TaskManager;
 import model.Epic;
 import model.Status;
 import model.SubTask;
@@ -30,7 +29,7 @@ public class Main {
                 case 4:
                     System.out.println("Введите ID эпика:");
                     long epicId = scanner.nextLong();
-                    manager.printAllSubtaskInEpic(epicId);
+                    printAllSubtaskInEpic(manager,epicId);
                     break;
                 case 5:
                     System.out.println("Введите ID эпика:");
@@ -62,7 +61,7 @@ public class Main {
                     break;
                 case 11:
                     System.out.println("Ваш список просмотренных задач");
-                    manager.getHistoryManager().getHistory();
+                    manager.getHistoryManager();
                     break;
                 case 0:
                     System.out.println("Выход из программы.");
@@ -71,6 +70,15 @@ public class Main {
                     System.out.println("Неизвестная команда. Попробуйте снова.");
             }
         }
+    }
+
+    public static void printAllSubtaskInEpic(TaskManager manager, Long id) {
+        if (manager.getEpics().containsKey(id)) {
+            manager.getEpics().get(id).printAllSubtask();
+        } else {
+            System.out.println("Задача с ID " + id + " не найден.");
+        }
+
     }
 
     public static void printMenu() {

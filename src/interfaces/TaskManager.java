@@ -1,15 +1,14 @@
-package manager;
+package interfaces;
 
 import model.Epic;
 import model.SubTask;
-import model.Task;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public interface TaskManager {
 
-    HashMap<Long, Epic> getEpics();
+    Map<Long, Epic> getEpics();
 
     void createEpic(Epic epic);
 
@@ -31,9 +30,8 @@ public interface TaskManager {
 
     void printEpic(Long id);
 
-    void printAllSubtaskInEpic(Long id);
 
-    HistoryManager getHistoryManager();
+    void getHistoryManager();
 
     Epic getEpicByID(long id);
 

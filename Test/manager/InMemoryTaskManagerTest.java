@@ -1,5 +1,7 @@
 package manager;
 
+import interfaces.HistoryManager;
+import interfaces.TaskManager;
 import model.Status;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -1,13 +1,14 @@
-package manager;
+package interfaces;
 
 import model.Task;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public interface HistoryManager {
     void add(Task task);
 
-    void getHistory();
+    Collection<Task> getHistory();
 
     int historySize();
 }
