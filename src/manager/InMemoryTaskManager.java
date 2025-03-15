@@ -8,7 +8,7 @@ import model.Task;
 
 import java.util.HashMap;
 import java.util.Map;
-import model.Epic;
+
 
 public class InMemoryTaskManager implements TaskManager {
     private Map<Long, Epic> epics = new HashMap<>();
@@ -124,6 +124,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     }
 
+    @Override
+    public void removeHistoryById(int id) {
+        historyManager.removeHistory(id);
+    }
 
     @Override
     public void deleteSubtask(Long item1, Long item2){

@@ -35,7 +35,7 @@ public interface TaskManager {
 
     Epic getEpicByID(long id);
 
-
+    void removeHistoryById(int id);
 
 
 }

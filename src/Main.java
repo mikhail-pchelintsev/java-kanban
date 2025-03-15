@@ -63,6 +63,12 @@ public class Main {
                     System.out.println("Ваш список просмотренных задач");
                     manager.getHistoryManager();
                     break;
+                case 12:
+                    System.out.println("Введите ID задачи для удаления из просмотренных:");
+                    int id = scanner.nextInt();
+                    manager.removeHistoryById(id);
+                    System.out.println("Задача успешно удалена из просмотренных.");
+                    break;
                 case 0:
                     System.out.println("Выход из программы.");
                     return;
@@ -94,6 +100,7 @@ public class Main {
         System.out.println("9. Обновить задачу по ID");
         System.out.println("10. Обновить подзадачу по ID");
         System.out.println("11. Показать список просмотренных задач");
+        System.out.println("12. Удалить просмотренную задачу");
         System.out.println("0. Выйти");
     }
 
