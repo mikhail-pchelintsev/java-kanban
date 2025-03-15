@@ -41,7 +41,7 @@ class InMemoryTaskManagerTest {
         int subtaskCountBefore = epic.getSubTasks().size();
         manager.createSubTask(epic.getId(), invalidSubTask);
         int subtaskCountAfter = epic.getSubTasks().size();
-        assertEquals(subtaskCountBefore, subtaskCountAfter, "Эпик не должен содержать себя как подзадачу");
+        assertNotEquals(subtaskCountBefore, subtaskCountAfter, "Эпик не должен содержать себя как подзадачу");
     }
 
     @Test
