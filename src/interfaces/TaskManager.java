@@ -30,7 +30,6 @@ public interface TaskManager {
 
     void printEpic(Long id);
 
-
     void getHistoryManager();
 
     Epic getEpicByID(long id);
