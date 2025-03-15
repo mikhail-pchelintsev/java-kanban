@@ -3,7 +3,6 @@ package interfaces;
 import model.Epic;
 import model.SubTask;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public interface TaskManager {
