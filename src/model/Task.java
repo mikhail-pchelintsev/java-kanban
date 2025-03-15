@@ -3,7 +3,7 @@ package model;
 import java.util.Objects;
 
 public class Task {
-    private Long Id;
+    private Long id;
     private String name;
     private String description;
     private Status status;
@@ -15,11 +15,11 @@ public class Task {
     }
 
     public long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Long id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getName() {
@@ -49,7 +49,7 @@ public class Task {
     @Override
     public String toString() {
         return "model.Task{" +
-                "taskId=" + Id +
+                "taskId=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
@@ -61,11 +61,11 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return Objects.equals(Id, task.Id) && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status;
+        return Objects.equals(id, task.id) && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Id, name, description, status);
+        return Objects.hash(id, name, description, status);
     }
 }
