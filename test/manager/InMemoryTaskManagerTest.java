@@ -30,7 +30,7 @@ class InMemoryTaskManagerTest {
     }
     @Test
     void classesAreEqualIfTheirEqualIsID() {
-        assertEquals(manager.getEpicByID(1), manager.getEpicByID(1), "должны быть одинаковыми");
+        assertEquals(manager.getEpicById(1), manager.getEpicById(1), "должны быть одинаковыми");
     }
 
     @Test
@@ -56,7 +56,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void findById() {
-        Epic foundEpic = manager.getEpicByID(1);
+        Epic foundEpic = manager.getEpicById(1);
         assertEquals("Переезд", foundEpic.getName(), "Нахвание не совпадает");
         assertEquals("Покупка дома", foundEpic.getDescription(), "Описание не совпадает");
         assertEquals(Status.NEW, foundEpic.getStatus(), "Status не совпадает");
@@ -64,7 +64,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void add() {
-        historyManager.add(manager.getEpicByID(1));
+        historyManager.add(manager.getEpicById(1));
         assertNotNull(historyManager, "История не пустая.");
         assertEquals(1, historyManager.historySize(), "История не пустая.");
     }

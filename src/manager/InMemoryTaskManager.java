@@ -20,7 +20,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Epic getEpicByID(long id) {
+    public Epic getEpicById(long id) {
         return epics.get(id);
     }
 
