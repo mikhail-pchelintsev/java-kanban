@@ -31,7 +31,7 @@ public interface TaskManager {
 
     void printEpic(Long id);
 
-    List<Task> getHistoryManager();
+    List<Task> getHistory();
 
     Epic getEpicById(long id);
 
