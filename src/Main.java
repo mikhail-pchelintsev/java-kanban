@@ -61,7 +61,7 @@ public class Main {
                     break;
                 case 11:
                     System.out.println("Ваш список просмотренных задач");
-                    if (manager.getHistoryManager().size() == 0){
+                    if (manager.getHistoryManager().size() == 0) {
                         System.out.println("Ваш список пока пустой)");
                     }
                     manager.getHistoryManager().forEach(System.out::println);
