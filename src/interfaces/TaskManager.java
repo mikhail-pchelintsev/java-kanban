@@ -2,6 +2,8 @@ package interfaces;
 
 import model.Epic;
 import model.SubTask;
+import model.Task;
+import java.util.List;
 
 import java.util.Map;
 
@@ -29,7 +31,7 @@ public interface TaskManager {
 
     void printEpic(Long id);
 
-    void getHistoryManager();
+    List<Task> getHistoryManager();
 
     Epic getEpicById(long id);
 

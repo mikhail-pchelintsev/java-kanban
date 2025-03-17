@@ -8,6 +8,7 @@ import model.Task;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 
 public class InMemoryTaskManager implements TaskManager {
@@ -113,15 +114,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void getHistoryManager() {
-        if (historyManager.getHistory().size() > 0) {
-            for (Task task : historyManager.getHistory()) {
-                System.out.println(task);
-            }
-        } else {
-            System.out.println("Пока что вы не смотрели свои задачи)");
-        }
-
+    public List<Task> getHistoryManager() {
+        return historyManager.getHistory();
     }
 
     @Override

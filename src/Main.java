@@ -61,7 +61,10 @@ public class Main {
                     break;
                 case 11:
                     System.out.println("Ваш список просмотренных задач");
-                    manager.getHistoryManager();
+                    if (manager.getHistoryManager().size() == 0){
+                        System.out.println("Ваш список пока пустой)");
+                    }
+                    manager.getHistoryManager().forEach(System.out::println);
                     break;
                 case 12:
                     System.out.println("Введите ID задачи для удаления из просмотренных:");
