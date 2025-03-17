@@ -24,12 +24,12 @@ public class Epic extends Task {
         return Objects.hash(super.hashCode(), subTasks);
     }
 
-    public void update(Long id, SubTask subTask){
+    public void update(Long id, SubTask subTask) {
         if (id == null || subTask == null) {
             System.out.println("Ошибка: ID или подадача не могут быть null.");
             return;
         }
-        if(subTasks.containsKey(id)){
+        if (subTasks.containsKey(id)) {
             SubTask existingSubtask = subTasks.get(id);
             existingSubtask.setName(subTask.getName());
             existingSubtask.setDescription(subTask.getDescription());

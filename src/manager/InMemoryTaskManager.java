@@ -8,7 +8,8 @@ import model.Task;
 
 import java.util.HashMap;
 import java.util.Map;
-import model.Epic;
+import java.util.List;
+
 
 public class InMemoryTaskManager implements TaskManager {
     private Map<Long, Epic> epics = new HashMap<>();
@@ -20,7 +21,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Epic getEpicByID (long id) {
+    public Epic getEpicById(long id) {
         return epics.get(id);
     }
 
@@ -60,11 +61,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateSubtaskById(Long id, SubTask subTask){
-        for (Epic epic : epics.values()){
+    public void updateSubtaskById(Long id, SubTask subTask) {
+        for (Epic epic : epics.values()) {
             HashMap<Long, SubTask> subTasks = epic.getSubTasks();
-            if (subTasks.containsKey(id)){
-                epic.update(id,subTask);
+            if (subTasks.containsKey(id)) {
+                epic.update(id, subTask);
             } else {
                 System.out.println("Подзадачи с таким ID нет");
             }
@@ -91,7 +92,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void printAllEpic() {
-        if (!epics.isEmpty()){
+        if (!epics.isEmpty()) {
             for (Epic epic : epics.values()) {
                 System.out.println(epic);
             }
@@ -113,22 +114,19 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void getHistoryManager() {
-        if(historyManager.getHistory().size() > 0){
-            for(Task task : historyManager.getHistory()) {
-                System.out.println(task);
-            }
-        } else {
-            System.out.println("Пока что вы не смотрели свои задачи)");
-        }
-
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 
+    @Override
+    public void removeHistoryById(int id) {
+        historyManager.removeHistory(id);
+    }
 
     @Override
-    public void deleteSubtask(Long item1, Long item2){
+    public void deleteSubtask(Long item1, Long item2) {
         Epic epic = epics.get(item1);
-        if (epic != null){
+        if (epic != null) {
             epic.deleteItemSubtask(item2);
         } else {
             System.out.println("Задач пока нет");

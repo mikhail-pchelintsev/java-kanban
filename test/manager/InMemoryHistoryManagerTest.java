@@ -32,8 +32,25 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void addHistory() {
-        historyManager.add(manager.getEpicByID(1));
+        historyManager.add(manager.getEpicById(1));
         assertNotNull(historyManager, "История не пустая.");
         assertEquals(1, historyManager.historySize(), "История не пустая.");
+    }
+
+    @Test
+    void removeHistory() {
+        assertNotNull(manager, "Список задач не пустой.");
+        historyManager.add(manager.getEpicById(1));
+        historyManager.removeHistory(1);
+        assertEquals(0, historyManager.historySize(), "История пустая.");
+    }
+    @Test
+    void getHistory() {
+        assertNotNull(historyManager.getHistory(), "История не пустая.");
+    }
+
+    @Test
+    void historySize() {
+        assertEquals(0, historyManager.historySize(), "История пустая.");
     }
 }
