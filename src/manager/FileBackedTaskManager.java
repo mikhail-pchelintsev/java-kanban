@@ -9,8 +9,14 @@ import java.io.*;
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private File file;
 
-    public FileBackedTaskManager(File file) {
+    private FileBackedTaskManager(File file) {
         this.file = file;
+    }
+
+    public static FileBackedTaskManager loadFromFile(File file) throws IOException {
+        FileBackedTaskManager manager = new FileBackedTaskManager(file);
+        manager.readFromFile();
+        return manager;
     }
 
     @Override
@@ -50,7 +56,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
 
-    public void loadFromFile(File file) throws IOException {
+    public void readFromFile() throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line = reader.readLine();
             if (line == null) return;
@@ -85,10 +91,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Ошибка при прочтении файла: " + e);
         }
-
     }
-
-
 }

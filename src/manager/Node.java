@@ -3,7 +3,7 @@ package manager;
 import model.Task;
 
 public class Node {
-    Task task;
+    private Task task;
     Node next;
     Node prev;
 
@@ -11,5 +11,9 @@ public class Node {
         this.task = task;
         this.next = null;
         this.prev = null;
+    }
+
+    public Task getTask() {
+        return task;
     }
 }

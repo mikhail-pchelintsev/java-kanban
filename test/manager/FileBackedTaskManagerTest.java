@@ -22,7 +22,7 @@ public class FileBackedTaskManagerTest {
     @BeforeEach
     void setUp() throws IOException {
         file = File.createTempFile("save", ".txt");
-        manager = new FileBackedTaskManager(file);
+        manager = FileBackedTaskManager.loadFromFile(file);
     }
 
     @Test
@@ -41,8 +41,7 @@ public class FileBackedTaskManagerTest {
         manager.createEpic(epic1);
         manager.createEpic(epic2);
 
-        FileBackedTaskManager loadedManager = new FileBackedTaskManager(file);
-        loadedManager.loadFromFile(file);
+        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
 
         assertEquals(2, loadedManager.getEpics().size(), "Должны загрузиться 2 эпика");
         assertTrue(loadedManager.getEpics().containsKey(epic1.getId()), "Эпик 1 должен быть загружен");
@@ -60,7 +59,7 @@ public class FileBackedTaskManagerTest {
         manager.createSubTask(epic.getId(), subTask1);
         manager.createSubTask(epic.getId(), subTask2);
 
-        FileBackedTaskManager loadedManager = new FileBackedTaskManager(file);
+        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
         loadedManager.loadFromFile(file);
 
         assertEquals(2, loadedManager.getEpics().get(epic.getId()).getSubTasks().size(), "Должны загрузиться 2 подзадачи");
