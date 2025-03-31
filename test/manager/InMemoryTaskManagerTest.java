@@ -2,6 +2,7 @@ package manager;
 
 import interfaces.HistoryManager;
 import interfaces.TaskManager;
+import manager.exception.ManagerSaveException;
 import model.Status;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ class InMemoryTaskManagerTest {
     public static TaskManager manager = Managers.getDefault();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
     @BeforeAll
-    public static void beforeAll() {
+    public static void beforeAll() throws ManagerSaveException {
 
         Epic epic1 = new Epic("Переезд", "Покупка дома", Status.NEW);
         Epic epic2 = new Epic("Накопить на новый телефон", "Устроиться на работу", Status.NEW);
@@ -34,7 +35,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void epicCantBeAddedAsSubTaskToItself() {
+    void epicCantBeAddedAsSubTaskToItself()throws ManagerSaveException {
         Epic epic = new Epic("Переезд", "Покупка дома", Status.NEW);
         manager.createEpic(epic);
         SubTask invalidSubTask = new SubTask("Переезд", "Покупка дома", Status.NEW);
