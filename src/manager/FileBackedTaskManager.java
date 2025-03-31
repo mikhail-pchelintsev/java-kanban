@@ -1,5 +1,7 @@
 package manager;
 
+import manager.exception.ManagerLoadException;
+import manager.exception.ManagerSaveException;
 import model.Epic;
 import model.Status;
 import model.SubTask;
@@ -13,50 +15,50 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.file = file;
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) throws IOException {
+    public static FileBackedTaskManager loadFromFile(File file) throws ManagerLoadException {
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
         manager.readFromFile();
         return manager;
     }
 
     @Override
-    public void createSubTask(long epicId, SubTask subTask) {
+    public void createSubTask(long epicId, SubTask subTask) throws ManagerSaveException {
         super.createSubTask(epicId, subTask);
         save();
     }
 
     @Override
-    public void updateSubtaskById(Long id, SubTask subTask) {
+    public void updateSubtaskById(Long id, SubTask subTask) throws ManagerSaveException {
         super.updateSubtaskById(id, subTask);
         save();
     }
 
     @Override
-    public void createEpic(Epic epic) {
+    public void createEpic(Epic epic) throws ManagerSaveException {
         super.createEpic(epic);
         save();
     }
 
     @Override
-    public void updateEpicById(Long id, Epic epic) {
+    public void updateEpicById(Long id, Epic epic) throws ManagerSaveException {
         super.updateEpicById(id, epic);
         save();
     }
 
     @Override
-    public void deleteEpic(Long id) {
+    public void deleteEpic(Long id) throws ManagerSaveException {
         super.deleteEpic(id);
         save();
     }
 
     @Override
-    public void deleteSubtask(Long item1, Long item2) {
+    public void deleteSubtask(Long item1, Long item2) throws ManagerSaveException {
         super.deleteSubtask(item1, item2);
         save();
     }
 
 
-    public void readFromFile() throws IOException {
+    public void readFromFile() throws ManagerLoadException {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line = reader.readLine();
             if (line == null) return;
@@ -75,10 +77,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     createSubTask(epicId, subTask);
                 }
             }
+
+        } catch (IOException | ManagerSaveException e) {
+            throw new ManagerLoadException("Ошибка при сохранении файла: " + e);
         }
     }
 
-    public void save() {
+    public void save() throws ManagerSaveException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) {
             String header = "name,description,status,id\n";
             writer.write(header);
@@ -91,7 +96,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Ошибка при прочтении файла: " + e);
+            throw new ManagerSaveException("Ошибка при сохранении файла: " + e);
         }
     }
 }

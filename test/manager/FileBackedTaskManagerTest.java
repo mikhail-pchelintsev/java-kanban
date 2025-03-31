@@ -1,6 +1,8 @@
 package manager;
 
 import interfaces.TaskManager;
+import manager.exception.ManagerLoadException;
+import manager.exception.ManagerSaveException;
 import model.Epic;
 import model.Status;
 import model.SubTask;
@@ -20,13 +22,13 @@ public class FileBackedTaskManagerTest {
     private File file;
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() throws IOException, ManagerLoadException {
         file = File.createTempFile("save", ".txt");
         manager = FileBackedTaskManager.loadFromFile(file);
     }
 
     @Test
-    void shouldSaveAndLoadEmptyFile() throws IOException {
+    void shouldSaveAndLoadEmptyFile() throws IOException, ManagerSaveException {
         Epic epic1 = new Epic("Переезд", "Покупка дома", Status.NEW);
         manager.createEpic(epic1);
         List<String> lines = Files.readAllLines(file.toPath());
@@ -35,7 +37,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldSaveAndLoadMultipleEpics() throws IOException {
+    void shouldSaveAndLoadMultipleEpics() throws ManagerSaveException, ManagerLoadException {
         Epic epic1 = new Epic("Переезд", "Покупка дома", Status.NEW);
         Epic epic2 = new Epic("Работа", "Найти новую работу", Status.NEW);
         manager.createEpic(epic1);
@@ -49,7 +51,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldSaveAndLoadMultipleSubtasks() throws IOException {
+    void shouldSaveAndLoadMultipleSubtasks() throws ManagerSaveException, ManagerLoadException {
         Epic epic = new Epic("Учеба", "Пройти курс Java", Status.NEW);
         manager.createEpic(epic);
 
