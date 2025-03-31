@@ -1,5 +1,7 @@
 import manager.Managers;
 import interfaces.TaskManager;
+import manager.exception.ManagerLoadException;
+import manager.exception.ManagerSaveException;
 import model.Epic;
 import model.Status;
 import model.SubTask;
@@ -7,7 +9,7 @@ import model.SubTask;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ManagerSaveException {
         TaskManager manager = Managers.getDefault();
         Scanner scanner = new Scanner(System.in);
 
@@ -107,7 +109,7 @@ public class Main {
         System.out.println("0. Выйти");
     }
 
-    private static void createEpic(TaskManager manager, Scanner scanner) {
+    private static void createEpic(TaskManager manager, Scanner scanner) throws ManagerSaveException {
         System.out.println("Введите название эпика:");
         String name = scanner.nextLine();
         System.out.println("Введите описание эпика:");
@@ -118,7 +120,7 @@ public class Main {
         System.out.println("Задача создан с ID: " + epic.getId());
     }
 
-    private static void updateEpic(TaskManager manager, Scanner scanner) {
+    private static void updateEpic(TaskManager manager, Scanner scanner) throws ManagerSaveException {
         System.out.println("Введите ID задачи, котрой хотите обновить:");
         long epicId = scanner.nextLong();
         scanner.nextLine();
@@ -135,7 +137,7 @@ public class Main {
         System.out.println("Задача создана с ID: " + epic.getId());
     }
 
-    private static void updateSubtask(TaskManager manager, Scanner scanner) {
+    private static void updateSubtask(TaskManager manager, Scanner scanner) throws ManagerSaveException {
         System.out.println("Введите ID подзадачи, котрой хотите обновить:");
         long subtaskId = scanner.nextLong();
         scanner.nextLine();
@@ -149,7 +151,7 @@ public class Main {
         System.out.println("Задача создана с ID: " + subTask.getId());
     }
 
-    private static void createSubtask(TaskManager manager, Scanner scanner) {
+    private static void createSubtask(TaskManager manager, Scanner scanner) throws ManagerSaveException {
         System.out.println("Введите ID эпика, к которому относится подзадача:");
         long epicId = scanner.nextLong();
         scanner.nextLine();
