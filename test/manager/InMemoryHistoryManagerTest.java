@@ -2,6 +2,7 @@ package manager;
 
 import interfaces.HistoryManager;
 import interfaces.TaskManager;
+import manager.exception.ManagerSaveException;
 import model.Epic;
 import model.Status;
 import model.SubTask;
@@ -15,7 +16,7 @@ class InMemoryHistoryManagerTest {
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     @BeforeAll
-    public static void beforeAll() {
+    public static void beforeAll() throws ManagerSaveException {
 
         Epic epic1 = new Epic("Переезд", "Покупка дома", Status.NEW);
         Epic epic2 = new Epic("Накопить на новый телефон", "Устроиться на работу", Status.NEW);
@@ -32,8 +33,25 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void addHistory() {
-        historyManager.add(manager.getEpicByID(1));
+        historyManager.add(manager.getEpicById(1));
         assertNotNull(historyManager, "История не пустая.");
         assertEquals(1, historyManager.historySize(), "История не пустая.");
+    }
+
+    @Test
+    void removeHistory() {
+        assertNotNull(manager, "Список задач не пустой.");
+        historyManager.add(manager.getEpicById(1));
+        historyManager.removeHistory(1);
+        assertEquals(0, historyManager.historySize(), "История пустая.");
+    }
+    @Test
+    void getHistory() {
+        assertNotNull(historyManager.getHistory(), "История не пустая.");
+    }
+
+    @Test
+    void historySize() {
+        assertEquals(0, historyManager.historySize(), "История пустая.");
     }
 }

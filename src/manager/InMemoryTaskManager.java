@@ -2,13 +2,15 @@ package manager;
 
 import interfaces.HistoryManager;
 import interfaces.TaskManager;
+import manager.exception.ManagerSaveException;
 import model.Epic;
 import model.SubTask;
 import model.Task;
 
 import java.util.HashMap;
 import java.util.Map;
-import model.Epic;
+import java.util.List;
+
 
 public class InMemoryTaskManager implements TaskManager {
     private Map<Long, Epic> epics = new HashMap<>();
@@ -20,12 +22,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Epic getEpicByID (long id) {
+    public Epic getEpicById(long id) {
         return epics.get(id);
     }
 
     @Override
-    public void createEpic(Epic epic) {
+    public void createEpic(Epic epic) throws ManagerSaveException {
         epic.setId(nextEpicId++);
         epics.put(epic.getId(), epic);
     }
@@ -42,7 +44,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateEpicById(Long id, Epic epic) {
+    public void updateEpicById(Long id, Epic epic) throws ManagerSaveException {
         if (id == null || epic == null) {
             System.out.println("Ошибка: ID или Задача не могут быть null.");
             return;
@@ -60,11 +62,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateSubtaskById(Long id, SubTask subTask){
-        for (Epic epic : epics.values()){
+    public void updateSubtaskById(Long id, SubTask subTask) throws ManagerSaveException {
+        for (Epic epic : epics.values()) {
             HashMap<Long, SubTask> subTasks = epic.getSubTasks();
-            if (subTasks.containsKey(id)){
-                epic.update(id,subTask);
+            if (subTasks.containsKey(id)) {
+                epic.update(id, subTask);
             } else {
                 System.out.println("Подзадачи с таким ID нет");
             }
@@ -73,7 +75,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void createSubTask(long epicId, SubTask subTask) {
+    public void createSubTask(long epicId, SubTask subTask) throws ManagerSaveException {
         if (epics.containsKey(epicId)) {
             long subTaskId = epics.get(epicId).getSubTasks().size() + 1;
             epics.get(epicId).createSubtask(subTask, subTaskId);
@@ -84,14 +86,14 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteEpic(Long id) {
+    public void deleteEpic(Long id) throws ManagerSaveException {
         epics.remove(id);
         System.out.println("задача удалена");
     }
 
     @Override
     public void printAllEpic() {
-        if (!epics.isEmpty()){
+        if (!epics.isEmpty()) {
             for (Epic epic : epics.values()) {
                 System.out.println(epic);
             }
@@ -113,22 +115,19 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void getHistoryManager() {
-        if(historyManager.getHistory().size() > 0){
-            for(Task task : historyManager.getHistory()) {
-                System.out.println(task);
-            }
-        } else {
-            System.out.println("Пока что вы не смотрели свои задачи)");
-        }
-
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 
+    @Override
+    public void removeHistoryById(int id) {
+        historyManager.removeHistory(id);
+    }
 
     @Override
-    public void deleteSubtask(Long item1, Long item2){
+    public void deleteSubtask(Long item1, Long item2) throws ManagerSaveException {
         Epic epic = epics.get(item1);
-        if (epic != null){
+        if (epic != null) {
             epic.deleteItemSubtask(item2);
         } else {
             System.out.println("Задач пока нет");
