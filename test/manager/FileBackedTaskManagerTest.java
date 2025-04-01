@@ -21,13 +21,13 @@ public class FileBackedTaskManagerTest {
     private File file;
 
     @BeforeEach
-    void setUp() throws IOException, ManagerLoadException {
+    void setUp() throws IOException {
         file = File.createTempFile("save", ".txt");
         manager = FileBackedTaskManager.loadFromFile(file);
     }
 
     @Test
-    void shouldSaveAndLoadEmptyFile() throws IOException, ManagerSaveException {
+    void shouldSaveAndLoadEmptyFile() throws IOException {
         Epic epic1 = new Epic("Переезд", "Покупка дома", Status.NEW);
         manager.createEpic(epic1);
         List<String> lines = Files.readAllLines(file.toPath());
@@ -36,7 +36,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldSaveAndLoadMultipleEpics() throws ManagerSaveException, ManagerLoadException {
+    void shouldSaveAndLoadMultipleEpics() {
         Epic epic1 = new Epic("Переезд", "Покупка дома", Status.NEW);
         Epic epic2 = new Epic("Работа", "Найти новую работу", Status.NEW);
         manager.createEpic(epic1);
@@ -50,7 +50,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldSaveAndLoadMultipleSubtasks() throws ManagerSaveException, ManagerLoadException {
+    void shouldSaveAndLoadMultipleSubtasks() {
         Epic epic = new Epic("Учеба", "Пройти курс Java", Status.NEW);
         manager.createEpic(epic);
 
