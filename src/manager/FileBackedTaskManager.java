@@ -61,69 +61,68 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public void readFromFile() {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line = reader.readLine();
-            if (line == null) return;
+            String header = reader.readLine(); // читаем заголовок
 
+            String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
+                if (line.trim().isEmpty()) continue;
 
-                if (parts.length == 5 || parts.length == 8) {
-                    String name = parts[0];
-                    String description = parts[1];
-                    Status status = Status.valueOf(parts[2]);
-                    long id = Long.parseLong(parts[4]);
+                String[] fields = line.split(",", -1); // разрешаем пустые значения
 
+                long id = Long.parseLong(fields[0]);
+                String type = fields[1];
+                String name = fields[2];
+                String description = fields[3];
+                Status status = Status.valueOf(fields[4]);
+
+                if (type.equals("EPIC")) {
                     Epic epic = new Epic(name, description, status);
                     epic.setId(id);
                     createEpic(epic);
-                } else if (parts.length == 7 || parts.length == 8) {
-                    String name = parts[0];
-                    String description = parts[1];
-                    Status status = Status.valueOf(parts[2]);
-                    Duration duration = Duration.parse(parts[3]);
-                    long subTaskId = Long.parseLong(parts[4]);
-                    long epicId = Long.parseLong(parts[5]);
-                    LocalDateTime startTime = LocalDateTime.parse(parts[6]);
+                } else if (type.equals("SUBTASK")) {
+                    long duration = fields[5].isEmpty() ? 0 : Long.parseLong(fields[5]);
+                    LocalDateTime startTime = fields[6].isEmpty() ? null : LocalDateTime.parse(fields[6]);
+                    long epicId = Long.parseLong(fields[7]);
 
-                    SubTask subTask =   new SubTask(name, description, status, duration,startTime);
-                    subTask.setSubTaskId(subTaskId);
-                    subTask.setStartTime(startTime);
+                    SubTask subTask = new SubTask(name, description, status, Duration.ofMinutes(duration), startTime);
+                    subTask.setId(id);
                     createSubTask(epicId, subTask);
                 }
             }
-        } catch (IOException | RuntimeException e) {
-            throw new ManagerLoadException("Ошибка при загрузке файла: " + e);
+        } catch (IOException e) {
+            throw new ManagerLoadException("Ошибка при загрузке файла: " + e.getMessage());
+        } catch (Exception e) {
+            throw new ManagerLoadException("Ошибка при разборе содержимого файла: " + e.getMessage());
         }
     }
+
+
 
 
     public void save() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) {
-            String header = "name,description,status,duration,subTaskId,epicId,startTime\n";
-            writer.write(header);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write("id,type,name,description,status,duration,startTime,epicId\n");
+
             for (Epic epic : getEpics().values()) {
-                writer.write(String.join(",",
+                writer.write(String.format("%d,EPIC,%s,%s,%s,,,,\n",
+                        epic.getId(),
                         epic.getName(),
                         epic.getDescription(),
-                        epic.getStatus().name(),
-                        "", "", "", ""));
-                writer.write("," + epic.getId());
-                writer.newLine();
-
+                        epic.getStatus()));
                 for (SubTask subTask : epic.getSubTasks().values()) {
-                    writer.write(String.join(",",
+                    writer.write(String.format("%d,SUBTASK,%s,%s,%s,%d,%s,%d\n",
+                            subTask.getSubTaskId(),
                             subTask.getName(),
                             subTask.getDescription(),
-                            subTask.getStatus().name(),
-                            subTask.getDuration().toString(),
-                            String.valueOf(subTask.getSubTaskId()),
-                            String.valueOf(epic.getId()),
-                            subTask.getStartTime().toString()));
-                    writer.newLine();
+                            subTask.getStatus(),
+                            subTask.getDuration() != null ? subTask.getDuration().toMinutes() : 0,
+                            subTask.getStartTime() != null ? subTask.getStartTime() : "",
+                            epic.getId()));
                 }
             }
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при сохранении файла: " + e);
+            throw new ManagerSaveException("Ошибка при сохранении файла: " + e.getMessage());
         }
     }
+
 }

@@ -31,7 +31,7 @@ public class FileBackedTaskManagerTest {
         manager.createEpic(epic1);
         List<String> lines = Files.readAllLines(file.toPath());
         assertEquals(2, lines.size());
-        assertEquals("name,description,status,id", lines.get(0), "Заголовок должен быть правильным");
+        assertEquals("name,description,status,duration,subTaskId,epicId,startTime", lines.get(0), "Заголовок должен быть правильным");
     }
 
     @Test
