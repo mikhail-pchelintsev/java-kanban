@@ -7,10 +7,8 @@ import model.Epic;
 import model.SubTask;
 import model.Task;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     private Map<Long, Epic> epics = new HashMap<>();
@@ -24,6 +22,45 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpicById(long id) {
         return epics.get(id);
+    }
+
+    public void getPrioritizedEpic(Map<Long, Epic> epics, int cmd) {
+        Comparator<Epic> comparator = Comparator
+                .comparing(Epic::getStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
+                .thenComparingLong(Epic::getId);
+
+        TreeSet<Epic> prioritizedEpic;
+        if (cmd == 1) {
+            prioritizedEpic = new TreeSet<>(comparator); // по возрастанию
+        } else if (cmd == 2) {
+            prioritizedEpic = new TreeSet<>(comparator.reversed()); // по убыванию
+        } else {
+            throw new IllegalStateException("Unexpected value: " + cmd);
+        }
+
+        prioritizedEpic.addAll(epics.values());
+
+        prioritizedEpic.forEach(System.out::println);
+    }
+
+    public void getPrioritizedSubTask(Map<Long, Epic> epics, int cmd, long subTaskId) {
+        TreeSet<SubTask> prioritizedSubTasks;
+        if (cmd == 1) {
+            prioritizedSubTasks = new TreeSet<>(Comparator.comparing(SubTask::getStartTime));
+        } else if (cmd == 2) {
+            prioritizedSubTasks = new TreeSet<>(Comparator.comparing(SubTask::getStartTime).reversed());
+        } else {
+            throw new IllegalStateException("Unexpected value: " + cmd);
+        }
+        for (Epic epic : epics.values()) {
+            SubTask subTask = epic.getSubTasks().get(subTaskId);
+            if (subTask != null) {
+                prioritizedSubTasks.add(subTask);
+            }
+        }
+        prioritizedSubTasks.forEach(System.out::println);
+
+
     }
 
     @Override
@@ -63,27 +100,38 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubtaskById(Long id, SubTask subTask) throws ManagerSaveException {
-        for (Epic epic : epics.values()) {
-            HashMap<Long, SubTask> subTasks = epic.getSubTasks();
-            if (subTasks.containsKey(id)) {
-                epic.update(id, subTask);
-            } else {
-                System.out.println("Подзадачи с таким ID нет");
-            }
+        if (hasOverlapping(subTask)) {
+            System.out.println("Ошибка: подзадача пересекается по времени с другой задачей.");
+            return;
         }
-
+        boolean updated = epics.values().stream()
+                .filter(epic -> epic.getSubTasks().containsKey(id))
+                .peek(epic -> epic.update(id, subTask))
+                .findFirst()
+                .isPresent();
+        if (!updated) {
+            System.out.println("Подзадачи с таким ID нет");
+        }
     }
 
     @Override
     public void createSubTask(long epicId, SubTask subTask) throws ManagerSaveException {
-        if (epics.containsKey(epicId)) {
-            long subTaskId = epics.get(epicId).getSubTasks().size() + 1;
-            epics.get(epicId).createSubtask(subTask, subTaskId);
-            System.out.println("Подзадача создана с ID: " + subTaskId);
-        } else {
-            System.out.println("Задача с ID " + epicId + " не найден.");
+        if (!epics.containsKey(epicId)) {
+            System.out.println("Задача с ID " + epicId + " не найдена.");
+            return;
         }
+
+        if (hasOverlapping(subTask)) {
+            System.out.println("Ошибка: подзадача пересекается по времени с другой задачей.");
+            return;
+        }
+
+        long subTaskId = epics.get(epicId).getSubTasks().size() + 1;
+        subTask.setId(subTaskId);
+        epics.get(epicId).createSubtask(subTask, subTaskId);
+        System.out.println("Подзадача создана с ID: " + subTaskId);
     }
+
 
     @Override
     public void deleteEpic(Long id) throws ManagerSaveException {
@@ -143,28 +191,30 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             System.out.println("Задача с ID " + id + " не найден.");
         }
-//        moveToWatch(epics.get(id));
     }
 
-//    public void moveToWatch(Task task) {
-//        if(listOfViewedTasks.size() <= 10){
-//            listOfViewedTasks.add(task);
-//        } else {
-//            listOfViewedTasks.remove(0);
-//            listOfViewedTasks.add(task);
-//        }
-//
-//    }
-//
-//    @Override
-//    public ArrayList<Task> getHistory() {
-//        if(listOfViewedTasks.size() == 0){
-//            System.out.println("Вы пока не смотрели свои задачи)");
-//        } else {
-//            for (Task task : listOfViewedTasks){
-//                System.out.println(task);
-//            }
-//        }
-//        return listOfViewedTasks;
-//    }
+    private boolean isOverlapping(SubTask t1, SubTask t2) {
+        if (t1.getStartTime() == null || t2.getStartTime() == null
+                || t1.getDuration() == null || t2.getDuration() == null) {
+            return false;
+        }
+
+        LocalDateTime start1 = t1.getStartTime();
+        LocalDateTime end1 = start1.plus(t1.getDuration());
+        LocalDateTime start2 = t2.getStartTime();
+        LocalDateTime end2 = start2.plus(t2.getDuration());
+
+        return start1.isBefore(end2) && start2.isBefore(end1);
+    }
+
+    private boolean hasOverlapping(SubTask newTask) {
+        return epics.values().stream()
+                .flatMap(epic -> epic.getSubTasks().values().stream())
+                .filter(existing -> {
+                    Long existingId = existing.getId();
+                    Long newId = newTask.getId();
+                    return !existingId.equals(newId);
+                })
+                .anyMatch(existing -> isOverlapping(existing, newTask));
+    }
 }

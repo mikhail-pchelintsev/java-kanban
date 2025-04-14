@@ -4,6 +4,9 @@ import model.Epic;
 import model.Status;
 import model.SubTask;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Main {
@@ -72,6 +75,18 @@ public class Main {
                     manager.removeHistoryById(id);
                     System.out.println("Задача успешно удалена из просмотренных.");
                     break;
+                case 13:
+                    System.out.println("Хотите отсортировать по возрастанию введите 1, по убыванию введите 2:");
+                    int cmdEpic = scanner.nextInt();
+                    manager.getPrioritizedEpic(manager.getEpics(), cmdEpic);
+                    break;
+                case 14:
+                    System.out.println("Введите ID эпика, к которому относится подзадача:");
+                    int epicIdToSort = scanner.nextInt();
+                    System.out.println("Хотите отсортировать по возрастанию введите 1, по убыванию введите 2:");
+                    int cmdSubTask = scanner.nextInt();
+                    manager.getPrioritizedSubTask(manager.getEpics(), cmdSubTask, epicIdToSort);
+                    break;
                 case 0:
                     System.out.println("Выход из программы.");
                     return;
@@ -104,6 +119,8 @@ public class Main {
         System.out.println("10. Обновить подзадачу по ID");
         System.out.println("11. Показать список просмотренных задач");
         System.out.println("12. Удалить просмотренную задачу");
+        System.out.println("13. Получить список отсортированнях задач");
+        System.out.println("14. Получить список отсортированнях подзадач");
         System.out.println("0. Выйти");
     }
 
@@ -142,11 +159,25 @@ public class Main {
         System.out.println("Введите новое название подзадачи:");
         String name = scanner.nextLine();
         System.out.println("Введите новое описание подзадачи:");
-        String description = scanner.nextLine();;
-        SubTask subTask = new SubTask(name, description, Status.NEW);
-        subTask.setId(subtaskId);
-        manager.updateSubtaskById(subtaskId, subTask);
-        System.out.println("Задача создана с ID: " + subTask.getId());
+        String description = scanner.nextLine();
+        System.out.println("Введите продолжительность работы в минутах:");
+        int durationOfMinures = scanner.nextInt();
+        Duration duration = Duration.ofMinutes(durationOfMinures);
+        System.out.print("Введите дату и время (в формате 01.02.2025 17:35): ");
+        scanner.nextLine();
+        String input = scanner.nextLine();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        try {
+            SubTask subTask = new SubTask(name, description, Status.NEW, duration, LocalDateTime.parse(input,
+                    formatter));
+            subTask.setId(subtaskId);
+            manager.updateSubtaskById(subtaskId, subTask);
+            System.out.println("Задача создана с ID: " + subTask.getId());
+        } catch (Exception e) {
+            System.out.println("Неверный формат ввода. Попробуйте снова.");
+        }
+
+
     }
 
     private static void createSubtask(TaskManager manager, Scanner scanner) {
@@ -161,8 +192,19 @@ public class Main {
         int number = scanner.nextInt();
         scanner.nextLine();
         Status status = pointStatus(number);
-        SubTask subtask = new SubTask(name, description, status);
-        manager.createSubTask(epicId, subtask);
+        System.out.println("Введите продолжительность работы в минутах:");
+        Integer durationOfMinures = scanner.nextInt();
+        Duration duration = Duration.ofMinutes(durationOfMinures);
+        System.out.print("Введите дату и время (в формате 01.02.2025 17:35): ");
+        scanner.nextLine();
+        String input = scanner.nextLine();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        try {
+            SubTask subTask = new SubTask(name, description, status, duration, LocalDateTime.parse(input, formatter));
+            manager.createSubTask(epicId, subTask);
+        } catch (Exception e) {
+            System.out.println("Неверный формат ввода. Попробуйте снова.");
+        }
     }
 
     public static Status pointStatus(int number) {

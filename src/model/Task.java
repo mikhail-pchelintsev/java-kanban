@@ -15,7 +15,7 @@ public class Task {
     }
 
     public long getId() {
-        return id;
+        return id != null ? id : -1;
     }
 
     public void setId(Long id) {

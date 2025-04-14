@@ -38,5 +38,7 @@ public interface TaskManager {
 
     void removeHistoryById(int id);
 
+    void getPrioritizedEpic(Map<Long, Epic> epics, int cmd);
 
+    void getPrioritizedSubTask(Map<Long, Epic> epics, int cmd, long epicId);
 }

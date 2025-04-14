@@ -9,6 +9,9 @@ import model.SubTask;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
@@ -22,8 +25,9 @@ class InMemoryHistoryManagerTest {
         Epic epic2 = new Epic("Накопить на новый телефон", "Устроиться на работу", Status.NEW);
 
         SubTask subTask1 = new SubTask("Просмотреть хороших риелторов",
-                "С хорошей репутацией", Status.NEW);
-        SubTask subTask2 = new SubTask("Посмотреть хорошие обьявления", "ПОсмотреть отзыви", Status.NEW);
+                "С хорошей репутацией", Status.NEW, Duration.ofMinutes(30), LocalDateTime.now());
+        SubTask subTask2 = new SubTask("Посмотреть хорошие обьявления", "ПОсмотреть отзыви", Status.NEW,
+                Duration.ofMinutes(90), LocalDateTime.now().plusDays(1));
 
         manager.createEpic(epic1);
         manager.createEpic(epic2);

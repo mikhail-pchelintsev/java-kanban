@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,8 +53,10 @@ public class FileBackedTaskManagerTest {
         Epic epic = new Epic("Учеба", "Пройти курс Java", Status.NEW);
         manager.createEpic(epic);
 
-        SubTask subTask1 = new SubTask("Читать книгу", "Глава 1", Status.NEW);
-        SubTask subTask2 = new SubTask("Решить задачи", "Практика", Status.NEW);
+        SubTask subTask1 = new SubTask("Читать книгу", "Глава 1", Status.NEW, Duration.ofMinutes(30),
+                LocalDateTime.now());
+        SubTask subTask2 = new SubTask("Решить задачи", "Практика", Status.NEW, Duration.ofMinutes(90),
+                LocalDateTime.now().plusDays(1));
 
         manager.createSubTask(epic.getId(), subTask1);
         manager.createSubTask(epic.getId(), subTask2);

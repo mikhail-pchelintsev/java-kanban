@@ -1,10 +1,14 @@
 package model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Objects;
 
 public class Epic extends Task {
     private HashMap<Long, SubTask> subTasks = new HashMap<>();
+    private static final DateTimeFormatter FORMATTER_FOR_YEAR = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
 
     public Epic(String name, String description, Status status) {
         super(name, description, status);
@@ -18,6 +22,39 @@ public class Epic extends Task {
         Epic epic = (Epic) o;
         return Objects.equals(subTasks, epic.subTasks);
     }
+
+    public String getEndTime() {
+        return getStartTime().plus(getMinDuration()).format(FORMATTER_FOR_YEAR);
+    }
+
+    public LocalDateTime getStartTime() {
+        if (subTasks.isEmpty()) {
+            return LocalDateTime.now();
+        }
+        LocalDateTime minStart = null;
+        for (SubTask subTask : subTasks.values()) {
+            if (minStart == null || subTask.getStartTime().isBefore(minStart)) {
+                minStart = subTask.getStartTime();
+            }
+        }
+        return minStart;
+    }
+
+    public Duration getMinDuration() {
+        if (subTasks.isEmpty()) {
+            return Duration.ZERO; // если нет подзадач, возвращаем Duration.ZERO
+        }
+        Duration minDuration = null;
+        for (SubTask subTask : subTasks.values()) {
+            if (subTask != null && subTask.getDuration() != null) {
+                if (minDuration == null || subTask.getDuration().compareTo(minDuration) < 0) {
+                    minDuration = subTask.getDuration();
+                }
+            }
+        }
+        return minDuration != null ? minDuration : Duration.ZERO;
+    }
+
 
     @Override
     public int hashCode() {
@@ -101,12 +138,21 @@ public class Epic extends Task {
         }
     }
 
+    private String formatDuration(Duration duration) {
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes() % 60;
+        return String.format("%02d:%02d", hours, minutes);  // формат ЧЧ:ММ
+    }
+
     @Override
     public String toString() {
         return "model.Epic{" +
                 "epicId=" + getId() +
                 ", name=" + getName() +
                 ", status=" + getStatus() +
+                ", duration=" + formatDuration(getMinDuration()) +
+                ", startTime=" + getStartTime().format(FORMATTER_FOR_YEAR) +
+                ", endTime=" + getEndTime() +
                 '}';
     }
 
