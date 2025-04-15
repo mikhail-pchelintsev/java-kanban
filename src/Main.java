@@ -1,6 +1,7 @@
 import manager.Managers;
 import interfaces.TaskManager;
 import model.Epic;
+import model.SortOrder;
 import model.Status;
 import model.SubTask;
 
@@ -76,16 +77,19 @@ public class Main {
                     System.out.println("Задача успешно удалена из просмотренных.");
                     break;
                 case 13:
-                    System.out.println("Хотите отсортировать по возрастанию введите 1, по убыванию введите 2:");
-                    int cmdEpic = scanner.nextInt();
-                    manager.getPrioritizedEpic(manager.getEpics(), cmdEpic);
+                    System.out.println("Хотите отсортировать по возрастанию введите ASCENDING," +
+                            " по убыванию введите DESCENDING:");
+                    String sortOrderEpic = scanner.next().toUpperCase();
+                    manager.getPrioritizedEpic(manager.getEpics(), SortOrder.valueOf(sortOrderEpic)).forEach(System.out::println);
                     break;
                 case 14:
                     System.out.println("Введите ID эпика, к которому относится подзадача:");
                     int epicIdToSort = scanner.nextInt();
-                    System.out.println("Хотите отсортировать по возрастанию введите 1, по убыванию введите 2:");
-                    int cmdSubTask = scanner.nextInt();
-                    manager.getPrioritizedSubTask(manager.getEpics(), cmdSubTask, epicIdToSort);
+                    System.out.println("Хотите отсортировать по возрастанию введите ASCENDING," +
+                            " по убыванию введите DESCENDING:");
+                    String sortOrderSubTask = scanner.next().toUpperCase();
+                    manager.getPrioritizedSubTask(manager.getEpics(), SortOrder.valueOf(sortOrderSubTask), epicIdToSort)
+                            .forEach(System.out::println);
                     break;
                 case 0:
                     System.out.println("Выход из программы.");

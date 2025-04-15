@@ -4,6 +4,7 @@ import interfaces.HistoryManager;
 import interfaces.TaskManager;
 import manager.exception.ManagerSaveException;
 import model.Epic;
+import model.SortOrder;
 import model.SubTask;
 import model.Task;
 
@@ -24,33 +25,33 @@ public class InMemoryTaskManager implements TaskManager {
         return epics.get(id);
     }
 
-    public void getPrioritizedEpic(Map<Long, Epic> epics, int cmd) {
+    public TreeSet<Epic> getPrioritizedEpic(Map<Long, Epic> epics, SortOrder sortOrder) {
         Comparator<Epic> comparator = Comparator
                 .comparing(Epic::getStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
                 .thenComparingLong(Epic::getId);
 
         TreeSet<Epic> prioritizedEpic;
-        if (cmd == 1) {
+        if (sortOrder.equals(SortOrder.ASCENDING)) {
             prioritizedEpic = new TreeSet<>(comparator); // по возрастанию
-        } else if (cmd == 2) {
+        } else if (sortOrder.equals(SortOrder.DESCENDING)) {
             prioritizedEpic = new TreeSet<>(comparator.reversed()); // по убыванию
         } else {
-            throw new IllegalStateException("Unexpected value: " + cmd);
+            throw new IllegalStateException("Unexpected value: " + sortOrder);
         }
 
         prioritizedEpic.addAll(epics.values());
 
-        prioritizedEpic.forEach(System.out::println);
+        return prioritizedEpic;
     }
 
-    public void getPrioritizedSubTask(Map<Long, Epic> epics, int cmd, long subTaskId) {
+    public TreeSet<SubTask> getPrioritizedSubTask(Map<Long, Epic> epics, SortOrder sortOrder, long subTaskId) {
         TreeSet<SubTask> prioritizedSubTasks;
-        if (cmd == 1) {
+        if (sortOrder.equals(SortOrder.ASCENDING)) {
             prioritizedSubTasks = new TreeSet<>(Comparator.comparing(SubTask::getStartTime));
-        } else if (cmd == 2) {
+        } else if (sortOrder.equals(SortOrder.DESCENDING)) {
             prioritizedSubTasks = new TreeSet<>(Comparator.comparing(SubTask::getStartTime).reversed());
         } else {
-            throw new IllegalStateException("Unexpected value: " + cmd);
+            throw new IllegalStateException("Unexpected value: " + sortOrder);
         }
         for (Epic epic : epics.values()) {
             SubTask subTask = epic.getSubTasks().get(subTaskId);
@@ -58,9 +59,8 @@ public class InMemoryTaskManager implements TaskManager {
                 prioritizedSubTasks.add(subTask);
             }
         }
-        prioritizedSubTasks.forEach(System.out::println);
 
-
+        return prioritizedSubTasks;
     }
 
     @Override

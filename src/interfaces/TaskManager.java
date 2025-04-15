@@ -2,17 +2,19 @@ package interfaces;
 
 import manager.exception.ManagerSaveException;
 import model.Epic;
+import model.SortOrder;
 import model.SubTask;
 import model.Task;
 import java.util.List;
 
 import java.util.Map;
+import java.util.TreeSet;
 
 public interface TaskManager {
 
     Map<Long, Epic> getEpics();
 
-    void createEpic(Epic epic) throws ManagerSaveException;
+    void createEpic(Epic epic);
 
     SubTask getSubTaskById(long subTaskId);
 
@@ -38,7 +40,7 @@ public interface TaskManager {
 
     void removeHistoryById(int id);
 
-    void getPrioritizedEpic(Map<Long, Epic> epics, int cmd);
+    TreeSet<Epic> getPrioritizedEpic(Map<Long, Epic> epics, SortOrder sortOrder);
 
-    void getPrioritizedSubTask(Map<Long, Epic> epics, int cmd, long epicId);
+    TreeSet<SubTask> getPrioritizedSubTask(Map<Long, Epic> epics, SortOrder sortOrder, long epicId);
 }
