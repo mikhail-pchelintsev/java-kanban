@@ -1,4 +1,4 @@
-package API;
+package http;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;

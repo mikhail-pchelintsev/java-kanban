@@ -1,6 +1,6 @@
-import API.DurationAdapter;
-import API.HttpTaskServer;
-import API.LocalDateTimeAdapter;
+import http.DurationAdapter;
+import http.HttpTaskServer;
+import http.LocalDateTimeAdapter;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
