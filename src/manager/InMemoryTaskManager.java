@@ -65,6 +65,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createEpic(Epic epic) throws ManagerSaveException {
+        if (epic.getId() != 0 && epics.containsKey(epic.getId())) {
+            throw new ManagerSaveException("Epic with such ID already exists");
+        }
         epic.setId(nextEpicId++);
         epics.put(epic.getId(), epic);
     }
