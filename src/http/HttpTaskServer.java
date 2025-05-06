@@ -1,0 +1,47 @@
+package http;
+
+import com.google.gson.Gson;
+import com.sun.net.httpserver.HttpServer;
+import interfaces.TaskManager;
+import manager.Managers;
+import util.JsonUtil;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+
+public class HttpTaskServer {
+    public static final int PORT = 8080;
+    private static final Gson gson = JsonUtil.GSON;
+
+    private final HttpServer httpServer;
+    private final TaskManager taskManager;
+
+    public HttpTaskServer(TaskManager taskManager) throws IOException {
+        this.taskManager = taskManager;
+        httpServer = HttpServer.create(new InetSocketAddress(PORT), 0);
+        httpServer.createContext("/epics", new EpicsHandler(this.taskManager));
+    }
+
+    public HttpTaskServer() throws IOException {
+        this(Managers.getDefault());
+    }
+
+    public void start() {
+        httpServer.start();
+        System.out.println("HTTP-сервер запущен на порту " + PORT);
+    }
+
+    public void stop() {
+        httpServer.stop(0);
+        System.out.println("HTTP-сервер остановлен");
+    }
+
+    public static Gson getGson() {
+        return gson;
+    }
+
+    public static void main(String[] args) throws IOException {
+        HttpTaskServer server = new HttpTaskServer();
+        server.start();
+    }
+}
