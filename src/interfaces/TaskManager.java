@@ -18,7 +18,7 @@ public interface TaskManager {
 
     SubTask getSubTaskById(long subTaskId);
 
-    void updateEpicById(Long id, Epic epic) throws ManagerSaveException;
+    void updateEpicById(Long id, Epic epic);
 
     void updateSubtaskById(Long id, SubTask subTask) throws ManagerSaveException;
 

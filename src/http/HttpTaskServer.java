@@ -1,22 +1,17 @@
 package http;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpServer;
 import interfaces.TaskManager;
 import manager.Managers;
+import util.JsonUtil;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 public class HttpTaskServer {
     public static final int PORT = 8080;
-    private static final Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .registerTypeAdapter(Duration.class, new DurationAdapter())
-            .create();
+    private static final Gson gson = JsonUtil.GSON;
 
     private final HttpServer httpServer;
     private final TaskManager taskManager;

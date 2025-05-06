@@ -1,3 +1,5 @@
+package manager;
+
 import http.DurationAdapter;
 import http.HttpTaskServer;
 import http.LocalDateTimeAdapter;
@@ -5,12 +7,12 @@ import http.LocalDateTimeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import interfaces.TaskManager;
-import manager.InMemoryTaskManager;
 import model.Epic;
 import model.Status;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
+import util.JsonUtil;
 
 import java.io.IOException;
 import java.net.URI;
@@ -28,10 +30,7 @@ public class HttpTaskManagerTasksTest {
 
     private TaskManager manager = new InMemoryTaskManager();
     private HttpTaskServer taskServer;
-    private static final Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .registerTypeAdapter(Duration.class, new DurationAdapter())
-            .create();
+    private static final Gson gson = JsonUtil.GSON;
 
 
     public HttpTaskManagerTasksTest() throws IOException {
@@ -48,6 +47,16 @@ public class HttpTaskManagerTasksTest {
         taskServer.stop();
     }
 
+    private HttpResponse<String> postEpic(String json) throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/epics");
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(url)
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
     @Test
     public void testAddTask() throws IOException, InterruptedException {
         // создаём задачу
@@ -55,15 +64,7 @@ public class HttpTaskManagerTasksTest {
         String taskJson = gson.toJson(epic);
         System.out.println("Request JSON: " + taskJson);
 
-        HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/epics");
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(url)
-                .POST(HttpRequest.BodyPublishers.ofString(taskJson))
-                .header("Content-Type", "application/json")
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = postEpic(taskJson);
 
         System.out.println("Response status: " + response.statusCode());
         System.out.println("Response body: " + response.body());
